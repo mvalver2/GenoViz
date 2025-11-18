@@ -1,59 +1,85 @@
 import pandas as pd
-from cyvcf2 import VCF
-import seaborn as sns
+import allel
 import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Load population info
-pop_info = pd.read_csv("integrated_call_samples_v3.20130502.ALL.panel", sep="\t")
-print(pop_info.head())
+# ---------------------------
+# Load user SNP file
+# ---------------------------
+user_file = "user_snps_chr22.csv"
+user_df = pd.read_csv(user_file)
+print("First few SNPs in user file:")
+print(user_df.head())
 
-# Load the user's matched SNPs
-individual = pd.read_csv("chr22_user1_matched.txt", sep="\t")
-user_rsids = set(individual['rsid'])  # create a set for fast lookup
+# Filter for chromosome 22
+user_chr22 = user_df[user_df['chromosome'].astype(str) == '22'].copy()
 
-# Open VCF
-vcf = VCF("chr22_filtered.vcf.gz")
+# ---------------------------
+# Load VCF
+# ---------------------------
+vcf_file = "chr22_subset.vcf.gz"
+callset = allel.read_vcf(vcf_file, fields=['variants/CHROM', 'variants/POS', 'variants/ID', 'calldata/GT', 'samples'])
+vcf_samples = callset['samples']
 
-# Extract only SNPs that match the user
-records = []
-for variant in vcf:
-    if variant.ID not in user_rsids:  # <-- FILTER STEP
-        continue
-    for i, gt in enumerate(variant.genotypes):  # gt = [allele1, allele2, phased]
-        records.append({
-            "rsid": variant.ID,
-            "sample": vcf.samples[i],
-            "gt": gt[0] + gt[1]  # simple sum of alleles, 0,1,2
-        })
+vcf_df = pd.DataFrame({
+    'chromosome': callset['variants/CHROM'],
+    'position': callset['variants/POS'],
+    'rsid': callset['variants/ID']
+})
 
-vcf_df = pd.DataFrame(records)
-vcf_df = vcf_df.merge(pop_info, left_on="sample", right_on="sample")
-print(vcf_df.head())
+gt_array = allel.GenotypeArray(callset['calldata/GT'])
 
-# Merge on rsid with user's data
-merged = vcf_df.merge(individual, on="rsid", suffixes=('_pop','_user'))
+# ---------------------------
+# Match user SNPs to VCF
+# ---------------------------
+vcf_df['key'] = vcf_df['chromosome'].astype(str) + ':' + vcf_df['position'].astype(str)
+user_chr22['key'] = user_chr22['chromosome'].astype(str) + ':' + user_chr22['position'].astype(str)
+
+matching_keys = set(vcf_df['key']).intersection(set(user_chr22['key']))
+if len(matching_keys) == 0:
+    raise ValueError("No matching chr22 SNPs found in VCF. Check your files.")
+
+vcf_idx = [i for i, k in enumerate(vcf_df['key']) if k in matching_keys]
+vcf_sub_df = vcf_df.iloc[vcf_idx].copy()
+gt_sub = gt_array.take(vcf_idx, axis=0)
+
+# Convert genotypes to dosage (number of alt alleles)
+dosage_df = pd.DataFrame(gt_sub.to_n_alt(), columns=vcf_samples)
+dosage_df['key'] = vcf_sub_df['key'].values
+
+# Merge user SNPs with dosages
+merged = user_chr22.merge(dosage_df, on='key', how='left')
+print("Merged SNPs with dosage (first 5 rows):")
 print(merged.head())
 
-# Calculate mean difference from population
-pop_diff = merged.groupby("super_pop").apply(
-    lambda df: (df['gt_user'] - df['gt_pop']).abs().mean()
-)
-print(pop_diff)
+# ---------------------------
+# Load population panel
+# ---------------------------
+panel_file = "integrated_call_samples_v3.20130502.ALL.panel"
+superpop_df = pd.read_csv(panel_file, sep='\t')
 
-# Allele frequency per SNP in each population
-allele_freq = merged.groupby(['rsid','super_pop'])['gt_pop'].mean() / 2
-merged = merged.merge(allele_freq.reset_index().rename(columns={'gt_pop':'AF'}), on=['rsid','super_pop'])
-rare_variants = merged[merged['AF'] < 0.01]
+# Keep only the samples that exist in the VCF
+superpop_df = superpop_df[superpop_df['sample'].isin(vcf_samples)]
 
-# Plot mean differences
-pop_diff.plot(kind='bar')
-plt.ylabel("Mean genotype difference")
-plt.title("Similarity of Individual to Populations")
+# ---------------------------
+# Calculate population allele frequencies
+# ---------------------------
+pop_cols = superpop_df['sample'].tolist()
+merged['pop_mean'] = merged[pop_cols].mean(axis=1)
+
+# ---------------------------
+# Simple visualization
+# ---------------------------
+plt.figure(figsize=(10,6))
+sns.histplot(merged['pop_mean'], bins=30, kde=True)
+plt.axvline(merged[vcf_samples[0]].mean(), color='red', linestyle='--', label='User mean dosage')
+plt.xlabel("Allele dosage in population")
+plt.ylabel("Number of SNPs")
+plt.title("Comparison of user chr22 SNPs to 1000 Genomes population")
+plt.legend()
+plt.tight_layout()
 plt.show()
 
-# Plot rare variant counts
-rare_counts = rare_variants.groupby('super_pop')['rsid'].count()
-rare_counts.plot(kind='bar')
-plt.ylabel("Number of rare SNPs")
-plt.title("Rare variants in each population")
-plt.show()
+# Save merged table for reference
+merged.to_csv("merged_chr22_dosage_with_pop.csv", index=False)
+print("Merged table saved as 'merged_chr22_dosage_with_pop.csv'")
