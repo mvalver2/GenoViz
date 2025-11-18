@@ -1,127 +1,109 @@
 import pandas as pd
-from cyvcf2 import VCF
+import numpy as np
+import allel
 import matplotlib.pyplot as plt
-from collections import defaultdict
 
 # 1. Load population info
 pop_info = pd.read_csv(
     "integrated_call_samples_v3.20130502.ALL.panel",
     sep="\t"
 )
-# Expect columns: sample, pop, super_pop, ...
 print("Population info:")
 print(pop_info.head())
 
-# Map sample -> super_pop
-sample_to_super = dict(zip(pop_info["sample"], pop_info["super_pop"]))
-
-# 2. Load the user's matched SNPs
+# 2. Load user's matched SNPs (with gt_user)
 individual = pd.read_csv("chr22_user1_matched.txt", sep="\t")
 print("User SNPs (head):")
 print(individual.head())
 
-# Ensure gt_user is numeric
 individual["gt_user"] = individual["gt_user"].astype(float)
-
-# Map rsid -> gt_user
-gt_user_map = dict(zip(individual["rsid"], individual["gt_user"]))
-user_rsids = set(gt_user_map.keys())
-
+user_gt_map = dict(zip(individual["rsid"], individual["gt_user"]))
+user_rsids = set(user_gt_map.keys())
 print(f"Number of user SNPs: {len(user_rsids)}")
 
-# 3. Open VCF (1000G chr22)
-vcf = VCF("chr22_filtered.vcf.gz")
+# 3. Load subset VCF with scikit-allel
+vcf_file = "chr22_subset.vcf.gz"
+callset = allel.read_vcf(
+    vcf_file,
+    fields=["variants/ID", "calldata/GT", "samples"]
+)
 
-# Streaming aggregates
-diff_sum = defaultdict(float)     # super_pop -> sum of |gt_user - gt_pop|
-diff_count = defaultdict(int)     # super_pop -> number of comparisons
+rsids = np.array(callset["variants/ID"])
+samples = np.array(callset["samples"])
+gt = allel.GenotypeArray(callset["calldata/GT"]).to_n_alt()  # (n_variants, n_samples)
 
-af_sum = defaultdict(float)       # (rsid, super_pop) -> sum of gt_pop
-af_count = defaultdict(int)       # (rsid, super_pop) -> number of genotypes
+print(f"Subset VCF: {gt.shape[0]} variants, {gt.shape[1]} samples")
 
-total_variants = 0
-matched_variants = 0
+# 4. Keep only variants that are in the user set (by rsid)
+mask_match = np.isin(rsids, list(user_rsids))
+rsids_match = rsids[mask_match]
+gt_match = gt[mask_match, :]  # (n_match_variants, n_samples)
+print(f"Matched variants between user and VCF: {gt_match.shape[0]}")
 
-print("Scanning VCF... this may take a bit, but you should see progress updates.")
+# Build vector of user genotypes in the same order as rsids_match
+user_gt_vec = np.array([user_gt_map[r] for r in rsids_match])  # (n_match_variants,)
 
-for variant in vcf:
-    total_variants += 1
-    if total_variants % 100000 == 0:
-        print(f"Processed {total_variants} variants, matched {matched_variants} user SNPs so far...")
+# 5. Filter population panel to samples present in VCF
+pop_info = pop_info[pop_info["sample"].isin(samples)]
+print(f"Samples in panel & VCF: {len(pop_info)}")
 
-    rsid = variant.ID
-    if rsid not in user_rsids:
-        continue
+# Map sample -> index in VCF sample list
+sample_to_idx = {s: i for i, s in enumerate(samples)}
 
-    matched_variants += 1
-    gt_user = gt_user_map[rsid]
+# Group sample indices by super population
+super_pop_to_indices = {}
+for sp, group in pop_info.groupby("super_pop"):
+    idxs = [sample_to_idx[s] for s in group["sample"] if s in sample_to_idx]
+    if idxs:
+        super_pop_to_indices[sp] = np.array(idxs, dtype=int)
 
-    # variant.genotypes is a list of [allele1, allele2, phased_flag]
-    for i, gt in enumerate(variant.genotypes):
-        a1, a2 = gt[0], gt[1]
+print("Super populations used:", list(super_pop_to_indices.keys()))
 
-        # Skip missing genotypes
-        if a1 < 0 or a2 < 0:
-            continue
-
-        sample = vcf.samples[i]
-        super_pop = sample_to_super.get(sample)
-        if super_pop is None:
-            continue
-
-        gt_pop = a1 + a2  # 0, 1, or 2
-
-        # For mean genotype difference
-        diff = abs(gt_user - gt_pop)
-        diff_sum[super_pop] += diff
-        diff_count[super_pop] += 1
-
-        # For allele frequency (AF) per SNP per super_pop
-        key = (rsid, super_pop)
-        af_sum[key] += gt_pop
-        af_count[key] += 1
-
-print(f"Done scanning VCF. Total variants: {total_variants}, matched user SNPs: {matched_variants}")
-
-# 4. Compute mean genotype difference per super_pop
+# 6. Compute mean genotype difference and rare variant counts per super_pop
 mean_diff = {}
-for sp in diff_sum:
-    if diff_count[sp] > 0:
-        mean_diff[sp] = diff_sum[sp] / diff_count[sp]
+rare_counts = {}
+
+for sp, idxs in super_pop_to_indices.items():
+    # Extract genotypes for this super_pop: shape (n_variants, n_samples_in_sp)
+    gt_sp = gt_match[:, idxs]
+
+    # Mask missing (-1) if any; allel.to_n_alt() usually gives 0,1,2 or 0 for missing,
+    # but we can be safe by treating negative values as missing.
+    gt_sp = gt_sp.astype(float)
+    gt_sp[gt_sp < 0] = np.nan
+
+    # --- Mean genotype difference ---
+    # Broadcast user_gt_vec (n_variants,) against gt_sp (n_variants, n_samples_in_sp)
+    diff = np.abs(gt_sp - user_gt_vec[:, None])  # (n_variants, n_samples_in_sp)
+    mean_diff[sp] = np.nanmean(diff)
+
+    # --- Rare variant counts ---
+    # Allele frequency per variant in this super_pop
+    # dosage 0/1/2 -> AF = mean(dosage) / 2
+    af = np.nanmean(gt_sp, axis=1) / 2.0  # (n_variants,)
+    rare_counts[sp] = int(np.sum(af < 0.01))
 
 print("Mean genotype difference by super population:")
 print(mean_diff)
-
-# 5. Compute rare variant counts per super_pop (AF < 0.01)
-rare_counts = defaultdict(int)
-
-for (rsid, sp), s in af_sum.items():
-    n = af_count[(rsid, sp)]
-    if n == 0:
-        continue
-    af = s / (2.0 * n)  # genotype dosage / (2 * number of samples)
-    if af < 0.01:
-        rare_counts[sp] += 1
-
 print("Rare variant counts (AF < 0.01) by super population:")
 print(rare_counts)
 
-# 6. Plot mean genotype difference
+# 7. Plot mean genotype difference
 mean_diff_series = pd.Series(mean_diff).sort_index()
 plt.figure()
 mean_diff_series.plot(kind="bar")
 plt.ylabel("Mean |gt_user - gt_pop|")
-plt.title("Similarity of Individual to Super Populations")
+plt.title("Similarity of Individual to Super Populations (chr22 subset, allel only)")
 plt.tight_layout()
-plt.savefig("mean_genotype_diff_by_super_pop.png")
+plt.savefig("mean_genotype_diff_by_super_pop_allel.png")
 plt.show()
 
-# 7. Plot rare variant counts
+# 8. Plot rare variant counts
 rare_counts_series = pd.Series(rare_counts).sort_index()
 plt.figure()
 rare_counts_series.plot(kind="bar")
 plt.ylabel("Number of rare SNPs (AF < 0.01)")
-plt.title("Rare variants per Super Population")
+plt.title("Rare variants per Super Population (chr22 subset, allel only)")
 plt.tight_layout()
-plt.savefig("rare_variant_counts_by_super_pop.png")
+plt.savefig("rare_variant_counts_by_super_pop_allel.png")
 plt.show()
