@@ -1,55 +1,103 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-
-
-
-#load and clean files
-def load_23andme(file_path):
+def load_23andme_txt(filepath):
     df = pd.read_csv(
-        file_path,
+        filepath,
         sep="\t",
-        comment="#",  
-        names=["rsid", "chromosome", "position", "genotype"],
+        comment="#",
+        names=["SNP", "chromosome", "position", "genotype"],
         dtype=str
     )
-    df = df.dropna()
+    df.dropna(inplace=True)
     return df
 
-user1 = load_23andme("user_info/user_1.txt")
-user2 = load_23andme("user_info/user_2.txt")
 
-#merge on shared SNPs
-merged = user1.merge(user2, on="rsid", suffixes=("_1", "_2"))
+# IBS calculation (0, 1, or 2 shared alleles)
+def ibs(g1, g2):
+    g1 = str(g1).upper()
+    g2 = str(g2).upper()
+    bad = ["", "N", "NA", "0", "--", "nan", "NONE"]
+    if g1 in bad or g2 in bad:
+        return None
+    if len(g1) != 2 or len(g2) != 2:
+        return None
+    a1, a2 = g1[0], g1[1]
+    b1, b2 = g2[0], g2[1]
+
+    matches = 0
+    if a1 == b1 or a1 == b2:
+        matches += 1
+    if a2 == b1 or a2 == b2:
+        matches += 1
+
+    return matches
+user1 = load_23andme_txt("user_info/user_1.txt")
+user2 = load_23andme_txt("user_info/user_2.txt")
+
+print("Loaded User1 SNPs:", len(user1))
+print("Loaded User2 SNPs:", len(user2))
+
+
+# Merge on shared SNPs
+merged = user1.merge(user2, on="SNP", suffixes=("_1", "_2"))
 print("Shared SNP count:", len(merged))
 
-#compute overall match rate
-def normalize(g):
-    return "".join(sorted(g)) 
 
-merged["norm1"] = merged["genotype_1"].apply(normalize)
-merged["norm2"] = merged["genotype_2"].apply(normalize)
+# Compute IBS values
+merged["IBS"] = merged.apply(
+    lambda r: ibs(r["genotype_1"], r["genotype_2"]),
+    axis=1
+)
+merged_clean = merged.dropna(subset=["IBS"]).copy()
 
-merged["match"] = merged["norm1"] == merged["norm2"]
+print("Comparable SNPs after filtering:", len(merged_clean))
+merged_clean["IBS_normalized"] = merged_clean["IBS"] / 2
+ibs_mean = merged_clean["IBS"].mean()
 
-overall_match_rate = merged["match"].mean()
-print("Overall match rate:", overall_match_rate)
+ibs2 = (merged_clean["IBS"] == 2).sum()
+ibs1 = (merged_clean["IBS"] == 1).sum()
+ibs0 = (merged_clean["IBS"] == 0).sum()
+
+print("\n=== IBS Summary ===")
+print("Mean raw IBS (0–2):", round(ibs_mean, 4))
+print("Mean normalized IBS (0–1):", round(ibs_mean/2, 4))
+print("IBS=2 (perfect match):", ibs2)
+print("IBS=1 (partial match):", ibs1)
+print("IBS=0 (no match):", ibs0)
+
+total_snps = ibs2 + ibs1 + ibs0
+overall_similarity_pct = round(((ibs2 * 2) + ibs1) / (total_snps * 2) * 100, 2)
+
+print("\nOverall Genomic Similarity:", overall_similarity_pct, "%")
+
+# Per-chromosome IBS
+merged_clean.loc[:, "chromosome_1"] = merged_clean["chromosome_1"].astype(str)
+
+def chr_sort_key(c):
+    if c.isdigit():
+        return (0, int(c))
+    return (1, c)
+
+chrom_ibsm = (
+    merged_clean.groupby("chromosome_1")["IBS_normalized"]
+    .mean()
+    .sort_index(key=lambda x: x.map(chr_sort_key))
+)
 
 
-#per chromosome match rates
-chrom_match = merged.groupby("chromosome_1")["match"].mean()
-print(chrom_match)
-
-
-# Plot per-chromosome match rate
-chrom_match = merged.groupby("chromosome_1")["match"].mean()
-
-plt.figure(figsize=(12,6))
-plt.bar(chrom_match.index, chrom_match.values)
+plt.figure(figsize=(14, 6))
+plt.bar(chrom_ibsm.index, chrom_ibsm.values)
+plt.ylim(0, 1)  
 plt.xlabel("Chromosome")
-plt.ylabel("Match Rate")
-plt.title("Per-Chromosome SNP Match Rate Between Two Users")
+plt.ylabel("Average IBS (0–1)")
+plt.suptitle("Per-Chromosome IBS Between User1 and User2", fontsize=16, fontweight="heavy")
+plt.title(f"Overall Similarity: {overall_similarity_pct}%", fontsize=13, fontweight = "bold")
 plt.xticks(rotation=90)
+
 plt.tight_layout()
 
-plt.savefig("results/chromosome_match_rate.png", dpi=300)
+plt.savefig("results/two_user_IBS_output.png", dpi=300)
 plt.show()
+print("\nSaved: results/two_user_IBS_output.png")
+merged_clean.to_csv("results/two_user_IBS_output.csv", index=False)
+print("Saved: results/two_user_IBS_output.csv")
