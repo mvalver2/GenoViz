@@ -2,12 +2,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
+
 #load and clean files
 def load_23andme(file_path):
     df = pd.read_csv(
         file_path,
         sep="\t",
-        comment="#",     # ignore comments
+        comment="#",  
         names=["rsid", "chromosome", "position", "genotype"],
         dtype=str
     )
@@ -23,7 +24,7 @@ print("Shared SNP count:", len(merged))
 
 #compute overall match rate
 def normalize(g):
-    return "".join(sorted(g))  # AG → AG, GA → AG
+    return "".join(sorted(g)) 
 
 merged["norm1"] = merged["genotype_1"].apply(normalize)
 merged["norm2"] = merged["genotype_2"].apply(normalize)
@@ -49,4 +50,6 @@ plt.ylabel("Match Rate")
 plt.title("Per-Chromosome SNP Match Rate Between Two Users")
 plt.xticks(rotation=90)
 plt.tight_layout()
+
+plt.savefig("results/chromosome_match_rate.png", dpi=300)
 plt.show()
