@@ -103,22 +103,24 @@ const isUser =
     <div style={{ display: "flex", gap: "20px" }}>
 
       {/* PCA PLOT */}
-      <div style={{ flex: 2 }}>
-        <Plot
-          data={traces}
-          layout={{
-            title: "PCA of 1000 Genomes + User",
-            xaxis: { title: "PC1" },
-            yaxis: { title: "PC2" },
-            height: 650,
-            showlegend: true
-          }}
-          onClick={handlePointClick}
-        />
+      <div style={{ flex: 1, borderRadius: "12px", boxShadow: "0 6px 15px rgba(0,0,0,0.3)" }}>
+       <Plot
+            data={traces}
+            layout={{
+              title: "PCA of 1000 Genomes + User",
+              xaxis: { title: "PC1" },
+              yaxis: { title: "PC2" },
+              height: 650,
+              showlegend: true,
+              paper_bgcolor: "rgba(255,255,255,1)",
+              plot_bgcolor: "rgba(255,255,255,1)"   
+            }}
+            onClick={handlePointClick}
+          />
       </div>
 
       {/* SIDEBAR */}
-      <div style={{ flex: 1, background: "#fafafa", padding: "20px", borderRadius: "12px" }}>
+      <div style={{ flex: 1, background: "#fafafa", padding: "20px", borderRadius: "12px", boxShadow: "0 6px 15px rgba(0,0,0,0.3)" }}>
 
         {/* Population Filters */}
         <h3>Filter Populations</h3>
