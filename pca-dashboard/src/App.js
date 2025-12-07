@@ -1,10 +1,10 @@
 import React from "react";
-import PcaDashboard from "./PcaDashboard";
+import PcaPage from "./PcaPage";
 
 function App() {
   return (
     <div style={{ padding: "20px" }}>
-      <PcaDashboard />
+      <PcaPage />
     </div>
   );
 }
