@@ -5,6 +5,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import os
+import json
 
 # --------------------------
 # File paths
@@ -157,6 +158,38 @@ pca_matrix_std = scaler.fit_transform(pca_matrix)
 # PCA
 pca = PCA(n_components=2)
 pcs = pca.fit_transform(pca_matrix_std)
+
+# Build JSON output for React dashboard
+pca_output = []
+
+# All 1000 Genomes samples
+for i, sample in enumerate(vcf_samples):
+    pca_output.append({
+        "sample": sample,
+        "super_pop": reduced_panel.loc[reduced_panel['sample']==sample, 'super_pop'].values[0],
+        "pop": reduced_panel.loc[reduced_panel['sample']==sample, 'pop'].values[0],
+        "gender": reduced_panel.loc[reduced_panel['sample']==sample, 'gender'].values[0],
+        "pc1": float(pcs[i,0]),
+        "pc2": float(pcs[i,1]),
+        "cluster": None    # (Optional, add later)
+    })
+
+# Add user point
+pca_output.append({
+    "sample": "USER",
+    "super_pop": "User",
+    "pop": "User",
+    "gender": "Unknown",
+    "pc1": float(pcs[-1,0]),
+    "pc2": float(pcs[-1,1]),
+    "cluster": "USER_CLUSTER"
+})
+
+# Save JSON
+with open(os.path.join(OUTPUT_DIR, "pca_points.json"), "w") as f:
+    json.dump(pca_output, f, indent=2)
+
+print("Saved interactive PCA JSON: results/pca_points.json")
 
 # --------------------------
 # Plot PCA
