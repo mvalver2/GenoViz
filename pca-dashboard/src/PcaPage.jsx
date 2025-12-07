@@ -9,7 +9,7 @@ export default function PcaPage() {
       <div style={{ maxWidth: "1200px", margin: "0 auto", fontFamily: "Arial, sans-serif", background: "transparent" }}>
         
         {/* HEADER */}
-        <header style={{ marginBottom: "40px", textAlign: "center", padding: "20px", background: "rgba(255,255,255,0.5)", borderRadius: "12px", boxShadow: "0 4px 15px rgba(0,0,0,0.2)" }}>
+        <header id="overview" style={{ marginBottom: "40px", textAlign: "center", padding: "20px", background: "rgba(255,255,255,0.5)", borderRadius: "12px", boxShadow: "0 4px 15px rgba(0,0,0,0.2)" }}>
           <h1 style={{ fontSize: "2.5rem", marginBottom: "10px", color: "#000b3d" }}>Genoviz</h1>
           <p style={{ fontSize: "1.1rem", lineHeight: "1.6" }}>
             For this project we analyse Chromosome 22 Population and Individual Genetics. This project visualizes genetic variation across different human populations using different gene analysis techniques including, 
@@ -21,7 +21,7 @@ export default function PcaPage() {
         </header>
 
         {/* PCA DASHBOARD */}
-        <section style={{ textAlign: "center", padding: "20px", background: "rgba(255,255,255,0.5)", borderRadius: "12px", boxShadow: "0 4px 15px rgba(0,0,0,0.2)" }}>
+        <section id="pcaplot" section style={{ textAlign: "center", padding: "20px", background: "rgba(255,255,255,0.5)", borderRadius: "12px", boxShadow: "0 4px 15px rgba(0,0,0,0.2)" }}>
           <h2 style={{ fontSize: "1.8rem", marginBottom: "15px", color: "#000b3d"}}>Interactive PCA Plot</h2>
           <p style={{ fontSize: "1rem", marginBottom: "20px", color: "#000b3d" }}>
             Use the filters to highlight different populations. Click on points to view detailed sample information. 
