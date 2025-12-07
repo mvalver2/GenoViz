@@ -2,18 +2,17 @@ import pandas as pd
 import allel
 import numpy as np
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import os
-from tqdm import tqdm
 
 # --------------------------
-# File paths (update as needed)
+# File paths
 # --------------------------
 USER_FILE = "Individual1Genomics.txt"
 PANEL_FILE = "integrated_call_samples_v3.20130502.ALL.panel"
 VCF_FILE = "chr22_subset.vcf.gz"
 OUTPUT_DIR = "results"
-MAX_PER_SUPERPOP = 20
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -23,7 +22,6 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 print(f"Loading user file: {USER_FILE}")
 user_df = pd.read_csv(USER_FILE, sep='\t', comment='#', low_memory=False)
 
-# Auto-detect columns and rename
 col_map = {
     user_df.columns[0]: 'rsid',
     user_df.columns[1]: 'chromosome',
@@ -32,104 +30,172 @@ col_map = {
 }
 user_df = user_df.rename(columns=col_map)
 
-print("Columns detected and renamed:", user_df.columns.tolist())
-print("First few SNPs in user file:")
-print(user_df.head())
+print("Columns detected:", user_df.columns.tolist())
 
 # Filter chr22
 user_chr22 = user_df[user_df['chromosome'].astype(str) == '22'].copy()
 print(f"Total user SNPs (chr22): {len(user_chr22)}")
 
+
 # --------------------------
-# Load 1000 Genomes panel and sample subset
+# Load 1000 Genomes panel
 # --------------------------
 panel = pd.read_csv(PANEL_FILE, sep='\t', comment='#', low_memory=False)
-print("Panel columns before cleaning:", panel.columns.tolist())
-
 panel = panel[['sample','pop','super_pop','gender']].dropna()
-reduced_panel = panel.groupby('super_pop', group_keys=False)\
-    .apply(lambda g: g.sample(n=min(MAX_PER_SUPERPOP,len(g)), random_state=42))\
-    .reset_index(drop=True)
-print("Samples chosen per super-pop:\n", reduced_panel['super_pop'].value_counts())
-print(f"Total kept samples: {len(reduced_panel)}")
 
 # --------------------------
-# Load VCF
+# Load VCF – get ALL sample names
 # --------------------------
-print(f"Opening VCF: {VCF_FILE}")
+print("Reading VCF sample list...")
+vcf_header = allel.read_vcf(VCF_FILE, fields=['samples'])
+vcf_samples = vcf_header['samples']
+
+# Use ALL samples present in the VCF
+reduced_panel = panel[panel['sample'].isin(vcf_samples)].reset_index(drop=True)
+
+print("Super-pop counts (ALL samples):")
+print(reduced_panel['super_pop'].value_counts())
+print("Total VCF samples:", len(reduced_panel))
+
+
+# --------------------------
+# Load VCF FULL GT data
+# --------------------------
+print(f"Opening full VCF: {VCF_FILE}")
 callset = allel.read_vcf(
     VCF_FILE,
-    samples=reduced_panel['sample'].tolist(),
-    fields=['variants/CHROM','variants/POS','variants/ID','calldata/GT','samples']
+    samples=vcf_samples.tolist(),   # ALL samples
+    fields=[
+        'variants/CHROM','variants/POS','variants/ID','variants/REF','variants/ALT',
+        'calldata/GT','samples'
+    ]
 )
 
 vcf_df = pd.DataFrame({
     'chromosome': callset['variants/CHROM'],
     'position': callset['variants/POS'],
-    'rsid': callset['variants/ID']
+    'rsid': callset['variants/ID'],
+    'ref': callset['variants/REF'],
+    'alt': [alt[0] for alt in callset['variants/ALT']]
 })
+
 gt_array = allel.GenotypeArray(callset['calldata/GT'])
-vcf_samples = callset['samples']
 
 # --------------------------
-# Match user SNPs to VCF by rsid
+# Match SNPs
 # --------------------------
-user_rsids = set(user_chr22['rsid'])
-vcf_df['key'] = vcf_df['chromosome'].astype(str) + ':' + vcf_df['position'].astype(str)
 user_chr22['key'] = user_chr22['chromosome'].astype(str) + ':' + user_chr22['position'].astype(str)
+vcf_df['key'] = vcf_df['chromosome'].astype(str) + ':' + vcf_df['position'].astype(str)
 
 matching_keys = set(vcf_df['key']).intersection(set(user_chr22['key']))
-print(f"Found {len(matching_keys)} matching chr22 SNPs in VCF")
+print(f"Found {len(matching_keys)} matched SNP positions.")
 
 vcf_idx = [i for i, k in enumerate(vcf_df['key']) if k in matching_keys]
 vcf_sub_df = vcf_df.iloc[vcf_idx].copy()
 gt_sub = gt_array.take(vcf_idx, axis=0)
 
-# Dosage conversion (0,1,2)
-dosage_df = pd.DataFrame(gt_sub.to_n_alt(), columns=vcf_samples)
+# Convert reference sample genotypes to dosage
+dosage_df = pd.DataFrame(
+    gt_sub.to_n_alt(), 
+    columns=vcf_samples
+)
 dosage_df['key'] = vcf_sub_df['key'].values
 
-# Merge user SNPs with dosages
-merged = user_chr22.merge(dosage_df, on='key', how='left')
-merged.to_csv(os.path.join(OUTPUT_DIR,'merged_chr22_dosage.csv'), index=False)
-print("Merged table saved:", merged.shape)
 
 # --------------------------
-# Allele frequencies per super-pop
+# PCA – user dosage alignment
 # --------------------------
-af_by_pop = {}
-for spop in reduced_panel['super_pop'].unique():
-    spop_samples = reduced_panel[reduced_panel['super_pop']==spop]['sample']
-    af = dosage_df[spop_samples].sum(axis=1) / (2*len(spop_samples))
-    af_by_pop[spop] = af
+def genotype_to_dosage(gt, ref, alt):
+    if not isinstance(gt, str) or len(gt) != 2:
+        return np.nan
+    alleles = list(gt.upper())
+    dosage = sum(a == alt for a in alleles)
+    # treat nonmatching as missing
+    if any((a not in [ref, alt]) for a in alleles):
+        return np.nan
+    return dosage
 
-af_df = pd.DataFrame(af_by_pop)
-af_df['rsid'] = vcf_sub_df['rsid'].values
-af_df.to_csv(os.path.join(OUTPUT_DIR,'af_by_superpop_chr22.csv'), index=False)
-print("Saved allele frequency table.")
+user_dosage = []
+for i, row in vcf_sub_df.iterrows():
+    k = row['key']
+    g = user_chr22.loc[user_chr22['key']==k, 'genotype']
+    if g.empty:
+        user_dosage.append(np.nan)
+        continue
+    
+    g_str = g.values[0]
+    ref_v = row['ref'].upper()
+    alt_v = row['alt'].upper()
+    a1, a2 = g_str[0].upper(), g_str[1].upper()
+
+    # Exact or flipped match
+    if {a1, a2} == {ref_v, alt_v}:
+        # aligned or reversed order
+        dosage = genotype_to_dosage(g_str, ref_v, alt_v)
+    else:
+        dosage = np.nan
+
+    user_dosage.append(dosage)
+
+user_dosage = np.array(user_dosage)
 
 # --------------------------
-# PCA analysis
+# Build PCA matrix
 # --------------------------
-pca_matrix = dosage_df[vcf_samples].to_numpy().T  # samples x variants
-pca = PCA(n_components=3)
-pcs = pca.fit_transform(pca_matrix)
+pca_matrix = dosage_df[vcf_samples].to_numpy().T  # samples x SNP
+pca_matrix = np.vstack([pca_matrix, user_dosage]) # add user
 
-plt.figure(figsize=(8,6))
-for i, spop in enumerate(reduced_panel['super_pop']):
-    plt.scatter(pcs[i,0], pcs[i,1], label=spop)
-plt.xlabel('PC1'); plt.ylabel('PC2')
-plt.title('PCA of chr22: individual vs populations')
+# Fill missing values (per SNP mean excluding user)
+col_mean = np.nanmean(pca_matrix[:-1, :], axis=0)
+for r, c in zip(*np.where(np.isnan(pca_matrix))):
+    pca_matrix[r, c] = col_mean[c]
+
+# Standardize
+scaler = StandardScaler()
+pca_matrix_std = scaler.fit_transform(pca_matrix)
+
+# PCA
+pca = PCA(n_components=2)
+pcs = pca.fit_transform(pca_matrix_std)
+
+# --------------------------
+# Plot PCA
+# --------------------------
+plt.figure(figsize=(10,8))
+superpop_colors = {
+    "AFR": "blue",
+    "AMR": "orange",
+    "EAS": "green",
+    "EUR": "purple",
+    "SAS": "brown"
+}
+
+for spop in superpop_colors.keys():
+    idx = reduced_panel[reduced_panel['super_pop'] == spop].index
+    plt.scatter(pcs[idx,0], pcs[idx,1], c=superpop_colors[spop], s=40, label=spop, alpha=0.7)
+
+# Plot user
+plt.scatter(
+    pcs[-1,0], pcs[-1,1],
+    c="red", marker="*", s=400, edgecolor="black", label="User"
+)
+
+plt.xlabel("PC1")
+plt.ylabel("PC2")
+plt.title("PCA of chr22 — 1000 Genomes (ALL samples) + User")
 plt.legend()
-plt.savefig(os.path.join(OUTPUT_DIR,'pca_pop_placement.png'))
+plt.tight_layout()
+plt.savefig(os.path.join(OUTPUT_DIR, "pca_all_samples_user.png"))
 plt.close()
-print("Saved PCA plot.")
+print("Saved PCA plot with ALL samples.")
+
 
 # --------------------------
-# Dosage boxplot by super-pop
+# Boxplot: allele dosage by super-pop
 # --------------------------
 box_data = []
 labels = []
+
 for spop in reduced_panel['super_pop'].unique():
     spop_samples = reduced_panel[reduced_panel['super_pop']==spop]['sample']
     box_data.append(dosage_df[spop_samples].values.flatten())
@@ -137,8 +203,9 @@ for spop in reduced_panel['super_pop'].unique():
 
 plt.figure(figsize=(10,6))
 plt.boxplot(box_data, labels=labels)
-plt.ylabel('Allele dosage (0,1,2)')
-plt.title('Allele dosages by super-population (chr22)')
-plt.savefig(os.path.join(OUTPUT_DIR,'pop_boxplot_dosage.png'))
+plt.ylabel("Allele dosage (0,1,2)")
+plt.title("Allele Dosages by Super-Population — chr22")
+plt.savefig(os.path.join(OUTPUT_DIR, "boxplot_all_samples.png"))
 plt.close()
-print("Saved dosage boxplot.")
+
+print("Saved dosage boxplot with all samples.")
