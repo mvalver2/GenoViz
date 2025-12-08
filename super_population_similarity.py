@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import allel
 import matplotlib.pyplot as plt
+import json
 
 # 1. Load population info
 pop_info = pd.read_csv(
@@ -88,12 +89,72 @@ print(mean_diff)
 print("Rare variant counts (AF < 0.01) by super population:")
 print(rare_counts)
 
+# 7. Create JSON data for Plotly chart
+json_data = {
+    "data": [
+        {
+            "type": "bar",
+            "x": list(rare_counts.keys()),  # Super populations
+            "y": list(rare_counts.values()),  # Rare variant counts
+            "name": "Rare variants per Super Population",
+            "marker": {
+                "color": "blue"
+            }
+        }
+    ],
+    "layout": {
+        "title": "Rare variants per Super Population",
+        "xaxis": {
+            "title": "Super Population"
+        },
+        "yaxis": {
+            "title": "Number of rare SNPs (AF < 0.01)"
+        }
+    }
+}
+
+# 8. Write the JSON data to a file
+with open('rare_variant_counts_by_super_pop_allel.json', 'w') as json_file:
+    json.dump(json_data, json_file)
+
+print("JSON file created successfully: rare_variant_counts_by_super_pop_allel.json")
+
+# Create JSON data for Similarity of Individual to Super Populations chart
+similarity_json_data = {
+    "data": [
+        {
+            "type": "bar",
+            "x": list(mean_diff.keys()),  # Super populations (from the mean_diff dictionary)
+            "y": list(mean_diff.values()),  # Mean genotype differences
+            "name": "Similarity of Individual to Super Populations",
+            "marker": {
+                "color": "blue"
+            }
+        }
+    ],
+    "layout": {
+        "title": "Similarity of Individual to Super Populations",
+        "xaxis": {
+            "title": "Super Population"
+        },
+        "yaxis": {
+            "title": "Mean |gt_user - gt_pop|"
+        }
+    }
+}
+
+# Write the JSON data to a file for Similarity chart
+with open('similarity_of_individual_to_super_pop.json', 'w') as json_file:
+    json.dump(similarity_json_data, json_file)
+
+print("JSON file created successfully: similarity_of_individual_to_super_pop.json")
+
 # 7. Plot mean genotype difference
 mean_diff_series = pd.Series(mean_diff).sort_index()
 plt.figure()
 mean_diff_series.plot(kind="bar")
 plt.ylabel("Mean |gt_user - gt_pop|")
-plt.title("Similarity of Individual to Super Populations (chr22 subset, allel only)")
+plt.title("Similarity of Individual to Super Populations")
 plt.tight_layout()
 plt.savefig("mean_genotype_diff_by_super_pop_allel.png")
 plt.show()
@@ -103,7 +164,7 @@ rare_counts_series = pd.Series(rare_counts).sort_index()
 plt.figure()
 rare_counts_series.plot(kind="bar")
 plt.ylabel("Number of rare SNPs (AF < 0.01)")
-plt.title("Rare variants per Super Population (chr22 subset, allel only)")
+plt.title("Rare variants per Super Population")
 plt.tight_layout()
 plt.savefig("rare_variant_counts_by_super_pop_allel.png")
 plt.show()

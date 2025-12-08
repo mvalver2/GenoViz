@@ -2,6 +2,7 @@ import pandas as pd
 import allel
 import matplotlib.pyplot as plt
 import seaborn as sns
+import json
 
 # ---------------------------
 # Load user SNP file
