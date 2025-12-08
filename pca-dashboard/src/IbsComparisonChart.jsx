@@ -85,6 +85,19 @@ const layout = {
         We then normalise IBS to 0(no similarity) - 1(perfect similarity) scale, a group of SNPs 
         by chromosome, and compute the average IBS per chromosome
         </p>
+       <div style={{ textAlign: "left", marginTop: "20px", lineHeight: "1.6", color: "#000b3d" }}>
+            <p>
+                <strong>Taller bars:</strong> Greater difference between the two individuals on that chromosome, 
+                indicating fewer shared alleles or more rare variants.
+            </p>
+            <p>
+                <strong>Shorter bars:</strong> Smaller difference, indicating more shared alleles or fewer rare variants.
+            </p>
+            <p>
+                This analysis helps reveal subtle genetic similarities or differences across chromosomes, 
+                complementing broader comparisons such as overall similarity percentages.
+            </p>
+            </div>
       </div>
     </div>
   );
