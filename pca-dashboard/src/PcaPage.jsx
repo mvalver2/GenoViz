@@ -1,6 +1,7 @@
 import React from "react";
 import PcaDashboard from "./PcaDashboard";
-import BarGraph from "./BarGraph"; // Your bar chart + explanation
+import BarGraph from "./BarGraph"; 
+import SimilarityBarChart from "./SimilarityBarChart";
 
 export default function PcaPage() {
   return (
@@ -54,6 +55,28 @@ export default function PcaPage() {
           <BarGraph /> {/* This will display the bar chart + explanations */}
         </section>
 
+        {/* RARE VARIANTS BAR CHART */}
+        <section
+          id="populationsimilarity"
+          style={{
+            textAlign: "center",
+            padding: "20px",
+            marginTop: "40px",
+            background: "rgba(255,255,255,0.5)",
+            borderRadius: "12px",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.2)"
+          }}
+        >
+          <h2 style={{ fontSize: "1.8rem", marginBottom: "15px", color: "#000b3d" }}>
+            Population Similarity
+          </h2>
+
+          <p style={{ fontSize: "1rem", marginBottom: "20px", color: "#000b3d" }}>
+            Examine how closely the user’s genetic profile aligns with each super-population.
+          </p>
+
+          <SimilarityBarChart /> 
+        </section>
       </div>
     </div>
   );
