@@ -56,8 +56,10 @@ export default function SimilarityBarChart() {
          limited genomic subset, offering insight into which reference population is genetically 
          closest to the individual. Although coarse and chromosome-restricted, this approach can 
          guide more detailed ancestry inference (e.g., PCA, ADMIXTURE) when expanded to genome-wide data.
-
         </p>
+       <p><strong>Big bars:</strong> Greater difference from the population, meaning fewer shared alleles or more rare variants.</p>
+        <p><strong>Smaller bars:</strong> Smaller difference from the population, meaning more shared alleles or fewer rare variants.</p>
+        <p>Rare variants are particularly informative for highlighting subtle genetic differences between populations.</p>
       </div>
     </div>
   );
