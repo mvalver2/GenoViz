@@ -1,5 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import json 
+
 def load_23andme_txt(filepath):
     df = pd.read_csv(
         filepath,
@@ -83,6 +85,34 @@ chrom_ibsm = (
     .mean()
     .sort_index(key=lambda x: x.map(chr_sort_key))
 )
+
+# ---- Create JSON data for Plotly (per-chromosome IBS) ----
+chromosomes = chrom_ibsm.index.tolist()          # e.g. ["1","2",...,"22","X"]
+avg_ibs = chrom_ibsm.values.tolist()             # list of floats
+
+ibs_json = {
+    "overall_similarity_pct": overall_similarity_pct,  # 83.08, etc.
+    "data": [
+        {
+            "type": "bar",
+            "x": chromosomes,
+            "y": avg_ibs,
+            "name": "Per-Chromosome IBS Between User1 and User2"
+        }
+    ],
+    "layout": {
+        "title": "Per-Chromosome IBS Between User1 and User2",
+        "xaxis": {"title": "Chromosome"},
+        "yaxis": {"title": "Average IBS (0–1)", "range": [0, 1]}
+    }
+}
+
+# Write JSON file
+with open("results/two_user_IBS_plot.json", "w") as f:
+    json.dump(ibs_json, f)
+
+print("Saved: results/two_user_IBS_plot.json")
+
 
 
 plt.figure(figsize=(14, 6))
