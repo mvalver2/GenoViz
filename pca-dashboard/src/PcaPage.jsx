@@ -1,11 +1,12 @@
 import React from "react";
 import PcaDashboard from "./PcaDashboard";
+import BarGraph from "./BarGraph"; // Your bar chart + explanation
 
 export default function PcaPage() {
   return (
     <div style={{ width: "100%", minHeight: "100vh", padding: "30px 0", boxSizing: "border-box" }}>
       
-      {/* Inner container (transparent so body gradient shows through) */}
+      {/* Inner container */}
       <div style={{ maxWidth: "1200px", margin: "0 auto", fontFamily: "Arial, sans-serif", background: "transparent" }}>
         
         {/* HEADER */}
@@ -21,8 +22,8 @@ export default function PcaPage() {
         </header>
 
         {/* PCA DASHBOARD */}
-        <section id="pcaplot" section style={{ textAlign: "center", padding: "20px", background: "rgba(255,255,255,0.5)", borderRadius: "12px", boxShadow: "0 4px 15px rgba(0,0,0,0.2)" }}>
-          <h2 style={{ fontSize: "1.8rem", marginBottom: "15px", color: "#000b3d"}}>Interactive PCA Plot</h2>
+        <section id="pcaplot" style={{ textAlign: "center", padding: "20px", background: "rgba(255,255,255,0.5)", borderRadius: "12px", boxShadow: "0 4px 15px rgba(0,0,0,0.2)" }}>
+          <h2 style={{ fontSize: "1.8rem", marginBottom: "15px", color: "#000b3d" }}>Interactive PCA Plot</h2>
           <p style={{ fontSize: "1rem", marginBottom: "20px", color: "#000b3d" }}>
             Use the filters to highlight different populations. Click on points to view detailed sample information. 
             Analyze clusters to see the population composition.
@@ -30,8 +31,30 @@ export default function PcaPage() {
           <PcaDashboard />
         </section>
 
+        {/* RARE VARIANTS BAR CHART */}
+        <section
+          id="rarevariants"
+          style={{
+            textAlign: "center",
+            padding: "20px",
+            marginTop: "40px",
+            background: "rgba(255,255,255,0.5)",
+            borderRadius: "12px",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.2)"
+          }}
+        >
+          <h2 style={{ fontSize: "1.8rem", marginBottom: "15px", color: "#000b3d" }}>
+            Rare Variants by Super Population
+          </h2>
+
+          <p style={{ fontSize: "1rem", marginBottom: "20px", color: "#000b3d" }}>
+            Explore the distribution of your rare variants (AF &lt; 0.01) across global super-populations.
+          </p>
+
+          <BarGraph /> {/* This will display the bar chart + explanations */}
+        </section>
+
       </div>
     </div>
   );
 }
-

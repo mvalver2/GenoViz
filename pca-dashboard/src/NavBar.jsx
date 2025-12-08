@@ -1,14 +1,14 @@
 import React from "react";
 
 export default function NavBar() {
-  const tabs = ["Overview", "PCA Plot", "IBS Comparison", "Individual Comparison"];
+  const tabs = ["Overview", "PCA Plot", "Rare Variants", "IBS Comparison", "Individual Comparison"];
 
   return (
     <div 
       style={{
         width: "180px",
         height: "100vh",
-        background:  "rgba(255,255,255,0.2)", // let the body gradient show
+        background:  "rgba(255,255,255,0.2)", 
         padding: "0px 10px",
         display: "flex",
         flexDirection: "column",
@@ -19,7 +19,7 @@ export default function NavBar() {
         top: 0,
         left: 0,
         zIndex: 1000,
-        fontFamily: "Arial, sans-serif", // same as your page
+        fontFamily: "Arial, sans-serif", 
         color: "#000b3d"
       }}
     >
