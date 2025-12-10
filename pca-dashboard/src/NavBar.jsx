@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function NavBar() {
-  const tabs = ["Overview", "PCA Plot", "Rare Variants","Population Similarity","IBS Comparison", "Individual Comparison"];
+  const tabs = ["Overview", "PCA Plot", "Rare Variants","Population Similarity","IBS Comparison"];
 
   return (
     <div 
