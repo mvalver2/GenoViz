@@ -1,0 +1,138 @@
+rsid,gene,trait
+rs671,ALDH2,Alcohol metabolism / flushing
+rs1229984,ADH1B,Alcohol metabolism / flushing
+rs2066702,ADH1B,Alcohol metabolism / flushing
+rs1693482,ADH1C,Alcohol metabolism / flushing
+rs698,ADH1C,Alcohol metabolism / flushing
+rs1573496,ADH4,Alcohol metabolism / flushing
+rs3911403,ADH4,Alcohol metabolism / flushing
+rs1789891,ADH1B,Alcohol metabolism / flushing
+rs2066470,ALDH1A1,Alcohol metabolism / flushing
+
+rs1805007,MC1R,Red hair / fair skin
+rs1805008,MC1R,Red hair / fair skin
+rs1805009,MC1R,Red hair / fair skin
+rs2228479,MC1R,Red hair / fair skin
+rs885479,ASIP,Red hair / fair skin
+rs1110400,TYRP1,Red hair / fair skin
+rs1408799,TYRP1,Red hair / fair skin
+rs7495174,OCA2,Red hair / fair skin
+rs7495170,OCA2,Red hair / fair skin
+
+rs12913832,HERC2,Eye color
+rs1129038,OCA2,Eye color
+rs1800407,OCA2,Eye color
+rs1393350,TYR,Eye color
+rs12896399,SLC24A4,Eye color
+rs12203592,IRF4,Eye color
+rs16891982,SLC45A2,Eye color
+rs1042602,TYR,Eye color
+rs6497292,OCA2,Eye color
+
+rs6025,F5,Blood clotting risk
+rs1799963,F2,Blood clotting risk
+rs2066865,FGG,Blood clotting risk
+rs118203758,PROC,Blood clotting risk
+rs2316710,PROS1,Blood clotting risk
+rs1799810,F9,Blood clotting risk
+
+rs1799971,OPRM1,Alcohol cravings
+rs4680,COMT,Alcohol cravings
+rs6265,BDNF,Alcohol cravings
+rs1386493,GABRA2,Alcohol cravings
+rs279858,GABRA2,Alcohol cravings
+rs1800497,ANKK1,Alcohol cravings
+
+rs4988235,LCT,Lactose tolerance
+rs182549,LCT,Lactose tolerance
+rs41380347,LCT,Lactose tolerance
+rs145946881,LCT,Lactose tolerance
+rs2322659,ABO,Lactose tolerance
+
+rs429358,APOE,Alzheimer's & heart disease
+rs7412,APOE,Alzheimer's & heart disease
+rs3851179,PICALM,Alzheimer's & heart disease
+rs6733839,BIN1,Alzheimer's & heart disease
+rs11136000,CLU,Alzheimer's & heart disease
+rs6656401,CR1,Alzheimer's & heart disease
+rs9331896,MS4A6A,Alzheimer's & heart disease
+rs190982,MEF2C,Alzheimer's & heart disease
+
+rs1799945,HFE,Hemochromatosis
+rs1800562,HFE,Hemochromatosis
+rs1800730,HFE,Hemochromatosis
+rs7531562,TFR2,Hemochromatosis
+rs855791,TMPRSS6,Hemochromatosis
+
+rs324420,FAAH,Substance use / pain tolerance
+rs1799971,OPRM1,Substance use / pain tolerance
+rs1800587,IL1A,Substance use / pain tolerance
+rs806368,CNR1,Substance use / pain tolerance
+rs806377,CNR1,Substance use / pain tolerance
+
+rs6265,BDNF,Cognitive & psychiatric traits
+rs1006737,CACNA1C,Cognitive & psychiatric traits
+rs1344706,ZSCAN4,Cognitive & psychiatric traits
+rs1625579,MIR137,Cognitive & psychiatric traits
+rs4680,COMT,Cognitive & psychiatric traits
+rs10994336,ANK3,Cognitive & psychiatric traits
+
+rs4680,COMT,Worrier–warrior dopamine
+rs165722,COMT,Worrier–warrior dopamine
+rs6269,COMT,Worrier–warrior dopamine
+rs4633,COMT,Worrier–warrior dopamine
+rs4818,COMT,Worrier–warrior dopamine
+
+rs1815739,ACTN3,Muscle performance
+rs577001,ACTN2,Muscle performance
+rs731236,VDR,Muscle performance
+rs12594956,ACE,Muscle performance
+rs4341,ACE,Muscle performance
+rs699,AGT,Muscle performance
+
+rs1051730,CHRNA3,Smoking behavior
+rs16969968,CHRNA5,Smoking behavior
+rs578776,CHRNB4,Smoking behavior
+rs11072768,BMP8A,Smoking behavior
+rs6474412,RAB4B,Smoking behavior
+
+rs174537,FADS1,Fatty acid metabolism
+rs174550,FADS1,Fatty acid metabolism
+rs102275,FADS2,Fatty acid metabolism
+rs1535,FADS2,Fatty acid metabolism
+rs174546,FADS1,Fatty acid metabolism
+rs174576,FADS2,Fatty acid metabolism
+
+rs4821480,TSPAN8,Kidney-related diseases
+rs12917707,UMOD,Kidney-related diseases
+rs11864909,SLC7A9,Kidney-related diseases
+rs4293393,UMOD,Kidney-related diseases
+rs267606799,COL4A5,Kidney-related diseases
+
+rs3024505,IL10,Autoimmune/inflammatory diseases
+rs2476601,PTPN22,Autoimmune/inflammatory diseases
+rs689,INS,Autoimmune/inflammatory diseases
+rs763361,CD226,Autoimmune/inflammatory diseases
+rs10499194,REL,Autoimmune/inflammatory diseases
+rs7753394,IL2RA,Autoimmune/inflammatory diseases
+
+rs3827760,EDAR,Hair thickness & tooth morphology
+rs12568808,EDAR,Hair thickness & tooth morphology
+rs3827759,EDAR,Hair thickness & tooth morphology
+rs260693,FGFR2,Hair thickness & tooth morphology
+rs717499,FGFR2,Hair thickness & tooth morphology
+
+rs9930506,FTO,Obesity
+rs1421085,FTO,Obesity
+rs1121980,FTO,Obesity
+rs1558902,FTO,Obesity
+rs8050136,FTO,Obesity
+rs11030104,BDNF,Obesity
+
+rs7901695,TCF7L2,Type 2 diabetes
+rs12255372,TCF7L2,Type 2 diabetes
+rs1801282,PPARG,Type 2 diabetes
+rs5219,KCNJ11,Type 2 diabetes
+rs4402960,IGF2BP2,Type 2 diabetes
+rs10811661,CDKN2A,Type 2 diabetes
+rs13266634,SLC30A8,Type 2 diabetes
