@@ -80,3 +80,19 @@ plt.xlabel("Percentage of SNPs Found (%)")
 plt.title("Trait Coverage in 23andMe Raw Data")
 plt.tight_layout()
 plt.show()
+
+import json
+
+# -----------------------------------------------------
+# 7. SAVE TRAIT COVERAGE TO JSON
+# -----------------------------------------------------
+# Convert Series to dictionary
+trait_counts_dict = trait_counts.to_dict()
+
+# Save to JSON file
+with open("trait_coverage.json", "w") as f:
+    json.dump(trait_counts_dict, f, indent=4)
+
+# Optional: print JSON to console
+print("\n=== TRAIT COVERAGE JSON ===")
+print(json.dumps(trait_counts_dict, indent=4))

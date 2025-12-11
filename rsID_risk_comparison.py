@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. LOAD 23andMe USER DATA
 # ==========================================
 user = pd.read_csv(
-    "user_info/user_2.txt",
+    "user_info/user_1.txt",
     comment="#",
     sep="\t",
     names=["rsid", "chrom", "pos", "genotype"]
@@ -64,13 +64,12 @@ print(merged[["rsid", "gene", "trait", "genotype", "risk_allele", "risk_count"]]
 print("\n=== RISK % PER TRAIT ===")
 print(risk_percentage.sort_values(ascending=False))
 
+
 # ==========================================
-# 7. PLOT RISK LEVEL PER TRAIT (WITHOUT SORTING)
+# 7. PLOT RISK LEVEL PER TRAIT
 # ==========================================
 plt.figure(figsize=(10, 6))
-
-# Just plot as-is, no sorting
-risk_percentage.plot(kind="barh")
+risk_percentage.sort_values().plot(kind="barh")
 
 plt.xlabel("Risk Percentage (%)")
 plt.title("User Genetic Risk Load by Trait/Disease")
@@ -80,3 +79,17 @@ plt.xlim(0, 100)
 
 plt.tight_layout()
 plt.show()
+
+# ==========================================
+# 8. add json file output
+# ==========================================
+import json
+
+# Convert Series to dictionary
+risk_dict = risk_percentage.to_dict()
+
+# Save as JSON file
+with open("risk_percentage.json", "w") as f:
+    json.dump(risk_dict, f, indent=4)
+
+print("Saved risk percentages to risk_percentage.json")
