@@ -1,0 +1,104 @@
+[
+  {
+    "rsid": "rs671",
+    "gene": "ALDH2",
+    "description": "Influences how your body breaks down alcohol; certain versions cause facial flushing and discomfort after drinking",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs1815739",
+    "gene": "ACTN3",
+    "description": "Affects muscle fiber type and power; some variants are linked to sprint strength while others favor endurance",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs6025",
+    "gene": "F5",
+    "description": "Affects blood clotting; certain variants increase the risk of forming dangerous blood clots",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs1801133",
+    "gene": "MTHFR",
+    "description": "Plays a role in processing folate (vitamin B9); some variants reduce efficiency and can affect homocysteine levels",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs1799971",
+    "gene": "OPRM1",
+    "description": "Influences how the brain responds to pain and pleasure; some variants are linked to stronger responses to opioids or alcohol",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs4988235",
+    "gene": "LCT",
+    "description": "Determines whether you can digest lactose as an adult; some variants allow continued milk digestion",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs429358",
+    "gene": "APOE",
+    "description": "One version of this gene is linked to a higher risk of Alzheimer\u2019s disease and heart disease later in life",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs7412",
+    "gene": "APOE",
+    "description": "Works together with other APOE variants to influence Alzheimer\u2019s disease risk, including protective forms",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs1799945",
+    "gene": "HFE",
+    "description": "Involved in iron absorption; some variants can cause the body to store too much iron",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs28942094",
+    "gene": "SERPINA1",
+    "description": "Affects lung and liver protection; certain rare variants can increase the risk of lung or liver disease",
+    "user_has_variant": "NO"
+  },
+  {
+    "rsid": "rs2066702",
+    "gene": "ADH1B",
+    "description": "Influences how quickly alcohol is broken down; faster breakdown can reduce heavy drinking risk",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs1001179",
+    "gene": "CAT",
+    "description": "Plays a role in protecting cells from oxidative damage caused by normal metabolism and environmental stress",
+    "user_has_variant": "NO"
+  },
+  {
+    "rsid": "rs1800795",
+    "gene": "IL6",
+    "description": "Involved in immune and inflammatory responses; some variants are linked to higher inflammation levels",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs1042713",
+    "gene": "ADRB2",
+    "description": "Affects how the body responds to stress hormones and certain asthma medications",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs1805008",
+    "gene": "MC1R",
+    "description": "Influences skin and hair pigmentation; some variants increase sun sensitivity and skin cancer risk",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs3813867",
+    "gene": "CYP2E1",
+    "description": "Plays a role in breaking down drugs, alcohol, and environmental toxins in the liver",
+    "user_has_variant": "YES"
+  },
+  {
+    "rsid": "rs17602729",
+    "gene": "AMPD1",
+    "description": "Affects muscle energy use during exercise; some variants are linked to quicker fatigue during intense activity",
+    "user_has_variant": "YES"
+  }
+]

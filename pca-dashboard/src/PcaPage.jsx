@@ -3,6 +3,8 @@ import PcaDashboard from "./PcaDashboard";
 import BarGraph from "./BarGraph"; 
 import SimilarityBarChart from "./SimilarityBarChart";
 import IbsComparisonChart from "./IbsComparisonChart";
+import TraitDashboardSection from "./TraitDashboardSection";
+
 
 export default function PcaPage() {
   return (
@@ -78,6 +80,31 @@ export default function PcaPage() {
 
           <SimilarityBarChart /> 
         </section>
+
+        {/* TRAIT & GENOTYPE EXPLORATION */}
+      <section
+        id="traitandgenotypeexploration"
+        style={{
+          textAlign: "center",
+          padding: "20px",
+          marginTop: "40px",
+          background: "rgba(255,255,255,0.5)",
+          borderRadius: "12px",
+          boxShadow: "0 4px 15px rgba(0,0,0,0.2)"
+        }}
+      >
+        <h2 style={{ fontSize: "1.8rem", marginBottom: "15px", color: "#000b3d" }}>
+          Trait & Genotype Exploration
+        </h2>
+
+        <p style={{ fontSize: "1rem", marginBottom: "20px", color: "#000b3d" }}>
+          Explore whether selected, well-studied genetic variants are present in the user’s
+          raw 23andMe data and what traits they are commonly associated with.
+        </p>
+
+        <TraitDashboardSection />
+      </section>
+
 
                 {/* RARE VARIANTS BAR CHART */}
         <section

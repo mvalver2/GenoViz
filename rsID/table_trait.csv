@@ -1,24 +1,18 @@
 rsid,gene,trait
-rs671,ALDH2,Alcohol flushing response
-rs1815739,ACTN3,Fast-twitch muscle performance 
-rs6025,F5,Factor V Leiden clotting disorder
-rs1801133,MTHFR,Folate processing efficiency
-rs1799971,OPRM1,Altered opioid receptor response
-rs4988235,LCT,Lactase persistence
-rs429358,APOE,Alzheimer’s and cardiovascular risk (ε4 allele)
-rs7412,APOE,Alzheimer’s protection vs risk haplotype
-rs1799945,HFE,Iron overload risk
-rs28942094,SERPINA1,Alpha-1 antitrypsin deficiency
-rs2066702,ADH1B,Alcohol metabolism speed
-rs1001179,CAT,Oxidative stress response
-rs1800795,IL6,Inflammatory response regulation
-rs1042713,ADRB2,Stress and bronchodilator response
-rs1805008,MC1R,UV sensitivity / skin cancer susceptibility
-rs3813867,CYP2E1,Drug and toxin metabolism
-rs17602729,AMPD1,Exercise-induced fatigue risk
-
-
-
-
-
-
+rs671,ALDH2,"Influences how your body breaks down alcohol; certain versions cause facial flushing and discomfort after drinking"
+rs1815739,ACTN3,"Affects muscle fiber type and power; some variants are linked to sprint strength while others favor endurance"
+rs6025,F5,"Affects blood clotting; certain variants increase the risk of forming dangerous blood clots"
+rs1801133,MTHFR,"Plays a role in processing folate (vitamin B9); some variants reduce efficiency and can affect homocysteine levels"
+rs1799971,OPRM1,"Influences how the brain responds to pain and pleasure; some variants are linked to stronger responses to opioids or alcohol"
+rs4988235,LCT,"Determines whether you can digest lactose as an adult; some variants allow continued milk digestion"
+rs429358,APOE,"One version of this gene is linked to a higher risk of Alzheimer’s disease and heart disease later in life"
+rs7412,APOE,"Works together with other APOE variants to influence Alzheimer’s disease risk, including protective forms"
+rs1799945,HFE,"Involved in iron absorption; some variants can cause the body to store too much iron"
+rs28942094,SERPINA1,"Affects lung and liver protection; certain rare variants can increase the risk of lung or liver disease"
+rs2066702,ADH1B,"Influences how quickly alcohol is broken down; faster breakdown can reduce heavy drinking risk"
+rs1001179,CAT,"Plays a role in protecting cells from oxidative damage caused by normal metabolism and environmental stress"
+rs1800795,IL6,"Involved in immune and inflammatory responses; some variants are linked to higher inflammation levels"
+rs1042713,ADRB2,"Affects how the body responds to stress hormones and certain asthma medications"
+rs1805008,MC1R,"Influences skin and hair pigmentation; some variants increase sun sensitivity and skin cancer risk"
+rs3813867,CYP2E1,"Plays a role in breaking down drugs, alcohol, and environmental toxins in the liver"
+rs17602729,AMPD1,"Affects muscle energy use during exercise; some variants are linked to quicker fatigue during intense activity"
