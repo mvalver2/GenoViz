@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/GenoViz/static/css/main.084c4906.css",
-    "main.js": "/GenoViz/static/js/main.d7577eb3.js",
+    "main.js": "/GenoViz/static/js/main.044300cd.js",
     "static/js/453.9241f610.chunk.js": "/GenoViz/static/js/453.9241f610.chunk.js",
     "index.html": "/GenoViz/index.html",
     "main.084c4906.css.map": "/GenoViz/static/css/main.084c4906.css.map",
-    "main.d7577eb3.js.map": "/GenoViz/static/js/main.d7577eb3.js.map",
+    "main.044300cd.js.map": "/GenoViz/static/js/main.044300cd.js.map",
     "453.9241f610.chunk.js.map": "/GenoViz/static/js/453.9241f610.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.084c4906.css",
-    "static/js/main.d7577eb3.js"
+    "static/js/main.044300cd.js"
   ]
 }
