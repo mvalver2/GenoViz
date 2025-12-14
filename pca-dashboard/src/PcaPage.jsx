@@ -4,6 +4,8 @@ import BarGraph from "./BarGraph";
 import SimilarityBarChart from "./SimilarityBarChart";
 import IbsComparisonChart from "./IbsComparisonChart";
 import TraitDashboardSection from "./TraitDashboardSection";
+import GenotypeDifferenceBar from "./GenotypeDifferenceBar";
+
 
 
 export default function PcaPage() {
@@ -105,29 +107,30 @@ export default function PcaPage() {
         <TraitDashboardSection />
       </section>
 
+      {/* GENOTYPE DIFFERENCE HISTOGRAM */}
+      <section
+        id="genotypedifferences"
+        style={{
+          textAlign: "center",
+          padding: "20px",
+          marginTop: "40px",
+          background: "rgba(255,255,255,0.5)",
+          borderRadius: "12px",
+          boxShadow: "0 4px 15px rgba(0,0,0,0.2)"
+        }}
+      >
+        <h2 style={{ fontSize: "1.8rem", marginBottom: "15px", color: "#000b3d" }}>
+          SNP-Level Genotype Differences
+        </h2>
 
-                {/* RARE VARIANTS BAR CHART */}
-        <section
-          id="ibscomparison"
-          style={{
-            textAlign: "center",
-            padding: "20px",
-            marginTop: "40px",
-            background: "rgba(255,255,255,0.5)",
-            borderRadius: "12px",
-            boxShadow: "0 4px 15px rgba(0,0,0,0.2)"
-          }}
-        >
-          <h2 style={{ fontSize: "1.8rem", marginBottom: "15px", color: "#000b3d" }}>
-            IBS Comparison
-          </h2>
+        <p style={{ fontSize: "1rem", marginBottom: "20px", color: "#000b3d" }}>
+          This bar chart summarizes how often two individuals share zero, one, or both
+          alleles across chromosome 22 SNPs.
+        </p>
 
-          <p style={{ fontSize: "1rem", marginBottom: "20px", color: "#000b3d" }}>
-            Examine how similar two individuals are on each chromosome based on IBS (Identical By State) comparison.
-          </p>
+        <GenotypeDifferenceBar />
+      </section>
 
-          <IbsComparisonChart /> 
-        </section>
 
       </div>
     </div>
