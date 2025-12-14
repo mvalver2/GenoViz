@@ -1,1 +1,0 @@
-{"data": [{"type": "bar", "x": ["AFR", "AMR", "EAS", "EUR", "SAS"], "y": [3246, 1940, 2988, 1311, 2610], "name": "Rare variants per Super Population", "marker": {"color": "blue"}}], "layout": {"title": "Rare variants per Super Population", "xaxis": {"title": "Super Population"}, "yaxis": {"title": "Number of rare SNPs (AF < 0.01)"}}}

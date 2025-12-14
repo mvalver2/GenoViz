@@ -1,1 +1,0 @@
-{"data": [{"type": "bar", "x": ["\u0394=0 (same genotype)", "\u0394=1 (share one allele)", "\u0394=2 (share zero alleles)"], "y": [500056, 66823, 20339], "name": "Genotype difference histogram"}], "layout": {"title": "Genotype Differences Between User1 and User2 (SNP-level)", "xaxis": {"title": "Difference category (derived from IBS)"}, "yaxis": {"title": "Number of SNPs"}}}
