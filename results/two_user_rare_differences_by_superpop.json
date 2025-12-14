@@ -1,0 +1,1 @@
+{"data": [{"type": "bar", "x": ["AFR", "AMR", "EAS", "EUR", "SAS"], "y": [71, 43, 129, 93, 69], "name": "Rare differing SNPs (AF < 0.01)"}], "layout": {"title": "Rare Differences Between Users by Super-Population (AF < 0.01)", "xaxis": {"title": "Super-population"}, "yaxis": {"title": "Count of differing SNPs that are rare"}}}

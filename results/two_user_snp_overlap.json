@@ -1,0 +1,1 @@
+{"data": [{"type": "bar", "x": ["Shared SNPs", "User 1 only", "User 2 only"], "y": [625020, 18515, 13443], "name": "SNP coverage"}], "layout": {"title": "SNP Coverage Between User1 and User2", "xaxis": {"title": "Category"}, "yaxis": {"title": "Number of SNPs"}}}

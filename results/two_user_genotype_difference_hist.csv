@@ -1,0 +1,4 @@
+diff_level,count,label
+0,500056,Δ=0 (same genotype)
+1,66823,Δ=1 (share one allele)
+2,20339,Δ=2 (share zero alleles)

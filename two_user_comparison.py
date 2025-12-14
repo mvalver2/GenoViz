@@ -33,8 +33,8 @@ def ibs(g1, g2):
         matches += 1
 
     return matches
-user1 = load_23andme_txt("user_info/user_1.txt")
-user2 = load_23andme_txt("user_info/user_2.txt")
+user1 = load_23andme_txt("Individual1Genomics.txt")
+user2 = load_23andme_txt("Individual2Genomics.txt")
 
 print("Loaded User1 SNPs:", len(user1))
 print("Loaded User2 SNPs:", len(user2))
