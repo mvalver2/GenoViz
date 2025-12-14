@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/GenoViz/pca-dashboard/static/css/main.084c4906.css",
-    "main.js": "/GenoViz/pca-dashboard/static/js/main.bf1d63c5.js",
-    "static/js/453.9241f610.chunk.js": "/GenoViz/pca-dashboard/static/js/453.9241f610.chunk.js",
-    "index.html": "/GenoViz/pca-dashboard/index.html",
-    "main.084c4906.css.map": "/GenoViz/pca-dashboard/static/css/main.084c4906.css.map",
-    "main.bf1d63c5.js.map": "/GenoViz/pca-dashboard/static/js/main.bf1d63c5.js.map",
-    "453.9241f610.chunk.js.map": "/GenoViz/pca-dashboard/static/js/453.9241f610.chunk.js.map"
+    "main.css": "/GenoViz/static/css/main.084c4906.css",
+    "main.js": "/GenoViz/static/js/main.9d01a2ef.js",
+    "static/js/453.9241f610.chunk.js": "/GenoViz/static/js/453.9241f610.chunk.js",
+    "index.html": "/GenoViz/index.html",
+    "main.084c4906.css.map": "/GenoViz/static/css/main.084c4906.css.map",
+    "main.9d01a2ef.js.map": "/GenoViz/static/js/main.9d01a2ef.js.map",
+    "453.9241f610.chunk.js.map": "/GenoViz/static/js/453.9241f610.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.084c4906.css",
-    "static/js/main.bf1d63c5.js"
+    "static/js/main.9d01a2ef.js"
   ]
 }
