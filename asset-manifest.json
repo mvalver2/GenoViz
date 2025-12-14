@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/mvalver2/GenoViz.git/static/css/main.084c4906.css",
-    "main.js": "/mvalver2/GenoViz.git/static/js/main.0399c788.js",
-    "static/js/453.9241f610.chunk.js": "/mvalver2/GenoViz.git/static/js/453.9241f610.chunk.js",
-    "index.html": "/mvalver2/GenoViz.git/index.html",
-    "main.084c4906.css.map": "/mvalver2/GenoViz.git/static/css/main.084c4906.css.map",
-    "main.0399c788.js.map": "/mvalver2/GenoViz.git/static/js/main.0399c788.js.map",
-    "453.9241f610.chunk.js.map": "/mvalver2/GenoViz.git/static/js/453.9241f610.chunk.js.map"
+    "main.css": "/mvalver2/GenoViz/static/css/main.084c4906.css",
+    "main.js": "/mvalver2/GenoViz/static/js/main.43a2177a.js",
+    "static/js/453.9241f610.chunk.js": "/mvalver2/GenoViz/static/js/453.9241f610.chunk.js",
+    "index.html": "/mvalver2/GenoViz/index.html",
+    "main.084c4906.css.map": "/mvalver2/GenoViz/static/css/main.084c4906.css.map",
+    "main.43a2177a.js.map": "/mvalver2/GenoViz/static/js/main.43a2177a.js.map",
+    "453.9241f610.chunk.js.map": "/mvalver2/GenoViz/static/js/453.9241f610.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.084c4906.css",
-    "static/js/main.0399c788.js"
+    "static/js/main.43a2177a.js"
   ]
 }
